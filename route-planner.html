@@ -44,23 +44,6 @@
       border-bottom: 1px solid #374151;
     }
 
-    .top-bar-back {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #9ca3af;
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.15s;
-    }
-    .top-bar-back:hover { color: #f9fafb; }
-
-    .top-bar-divider {
-      width: 1px;
-      height: 20px;
-      background: #374151;
-    }
-
     .top-bar-title {
       font-size: 18px;
       font-weight: 700;
@@ -133,6 +116,98 @@
       font-size: 12px;
       color: #6b7280;
       margin-top: 8px;
+    }
+
+    /* Search */
+    .search-wrap { position: relative; margin-bottom: 10px; }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #374151;
+      border: 1px solid #4b5563;
+      border-radius: 8px;
+      padding: 0 10px;
+      transition: border-color 0.15s;
+    }
+    .search-row:focus-within { border-color: #3b82f6; }
+
+    .search-row .fa-search { color: #6b7280; font-size: 13px; flex-shrink: 0; }
+
+    .search-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f9fafb;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+    .search-row input::placeholder { color: #6b7280; }
+
+    .search-clear {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .search-clear:hover { color: #d1d5db; }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      list-style: none;
+      z-index: 1000;
+      max-height: 210px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .search-dropdown li {
+      padding: 9px 12px;
+      font-size: 13px;
+      color: #d1d5db;
+      cursor: pointer;
+      border-bottom: 1px solid #374151;
+      line-height: 1.35;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+    .search-dropdown li:last-child { border-bottom: none; }
+    .search-dropdown li:hover,
+    .search-dropdown li.focused { background: #374151; color: #f9fafb; }
+    .search-dropdown li .fa { color: #6b7280; font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+
+    .search-status {
+      padding: 11px 12px;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+      cursor: default;
+    }
+
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #4b5563;
+      margin: 10px 0;
+    }
+    .or-divider::before, .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #374151;
     }
 
     /* Activity */
@@ -350,10 +425,6 @@
 
   <!-- Top bar -->
   <header class="top-bar">
-    <a href="index.html" class="top-bar-back">
-      <i class="fa fa-arrow-left"></i> Portfolio
-    </a>
-    <div class="top-bar-divider"></div>
     <span class="top-bar-title">
       <i class="fa fa-refresh" style="color:#3b82f6;margin-right:6px;"></i>Circular Route Planner
     </span>
@@ -368,6 +439,20 @@
       <!-- Start point -->
       <div class="card">
         <div class="card-label"><i class="fa fa-map-marker"></i> Start Point</div>
+
+        <div class="search-wrap">
+          <div class="search-row">
+            <i class="fa fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search for a place…" autocomplete="off" spellcheck="false">
+            <button class="search-clear hidden" id="search-clear" tabindex="-1" aria-label="Clear search">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <ul class="search-dropdown hidden" id="search-dropdown"></ul>
+        </div>
+
+        <div class="or-divider">or</div>
+
         <button class="btn-location" id="btn-location">
           <i class="fa fa-crosshairs"></i> Use My Location
         </button>
@@ -683,6 +768,113 @@ document.getElementById('btn-generate').addEventListener('click', generateRoute)
 document.getElementById('btn-reshuffle').addEventListener('click', () => {
   bearingBase = (bearingBase + 45 + Math.random() * 90) % 360;
   generateRoute();
+});
+
+/* ================================================================
+   Location Search (Nominatim)
+   ================================================================ */
+const NOMINATIM   = 'https://nominatim.openstreetmap.org/search';
+const searchInput = document.getElementById('search-input');
+const searchDrop  = document.getElementById('search-dropdown');
+const searchClear = document.getElementById('search-clear');
+
+let searchTimer   = null;
+let searchAbort   = null;
+let focusedIdx    = -1;
+
+function openDrop(html) {
+  searchDrop.innerHTML = html;
+  searchDrop.classList.remove('hidden');
+  focusedIdx = -1;
+}
+
+function closeDrop() {
+  searchDrop.classList.add('hidden');
+  searchDrop.innerHTML = '';
+  focusedIdx = -1;
+}
+
+function moveFocus(delta) {
+  const items = searchDrop.querySelectorAll('li[data-lat]');
+  if (!items.length) return;
+  items[focusedIdx]?.classList.remove('focused');
+  focusedIdx = Math.max(0, Math.min(items.length - 1, focusedIdx + delta));
+  items[focusedIdx].classList.add('focused');
+  items[focusedIdx].scrollIntoView({ block: 'nearest' });
+}
+
+function selectResult(lat, lng, label) {
+  searchInput.value = label;
+  searchClear.classList.remove('hidden');
+  closeDrop();
+  placeStart(lat, lng);
+  map.setView([lat, lng], 15);
+}
+
+async function doSearch(q) {
+  if (searchAbort) searchAbort.abort();
+  searchAbort = new AbortController();
+  try {
+    const url = `${NOMINATIM}?q=${encodeURIComponent(q)}&format=json&limit=6&addressdetails=0`;
+    const res  = await fetch(url, { signal: searchAbort.signal, headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+
+    if (!data.length) {
+      openDrop('<li class="search-status">No results found</li>');
+      return;
+    }
+
+    openDrop(data.map(r =>
+      `<li data-lat="${r.lat}" data-lng="${r.lon}">
+         <i class="fa fa-map-marker"></i>
+         <span>${r.display_name}</span>
+       </li>`
+    ).join(''));
+
+    searchDrop.querySelectorAll('li[data-lat]').forEach(li => {
+      li.addEventListener('mousedown', e => {
+        e.preventDefault();
+        selectResult(parseFloat(li.dataset.lat), parseFloat(li.dataset.lng),
+          li.querySelector('span').textContent);
+      });
+    });
+  } catch (err) {
+    if (err.name !== 'AbortError') openDrop('<li class="search-status">Search unavailable</li>');
+  }
+}
+
+searchInput.addEventListener('input', function () {
+  const q = this.value.trim();
+  searchClear.classList.toggle('hidden', !q);
+  clearTimeout(searchTimer);
+  if (q.length < 2) { closeDrop(); return; }
+  openDrop('<li class="search-status"><i class="fa fa-spinner fa-spin"></i> Searching…</li>');
+  searchTimer = setTimeout(() => doSearch(q), 350);
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown')  { e.preventDefault(); moveFocus(+1); }
+  if (e.key === 'ArrowUp')    { e.preventDefault(); moveFocus(-1); }
+  if (e.key === 'Escape')     { closeDrop(); searchInput.blur(); }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const focused = searchDrop.querySelector('li.focused') || searchDrop.querySelector('li[data-lat]');
+    if (focused) {
+      selectResult(parseFloat(focused.dataset.lat), parseFloat(focused.dataset.lng),
+        focused.querySelector('span').textContent);
+    }
+  }
+});
+
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchClear.classList.add('hidden');
+  closeDrop();
+  searchInput.focus();
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) closeDrop();
 });
 </script>
 </body>
