@@ -27,7 +27,6 @@
       overflow: hidden;
     }
 
-    /* ── Layout ── */
     .app-shell {
       display: flex;
       flex-direction: column;
@@ -42,23 +41,6 @@
       padding: 12px 24px;
       background: #1f2937;
       border-bottom: 1px solid #374151;
-    }
-
-    .top-bar-back {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #9ca3af;
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.15s;
-    }
-    .top-bar-back:hover { color: #f9fafb; }
-
-    .top-bar-divider {
-      width: 1px;
-      height: 20px;
-      background: #374151;
     }
 
     .top-bar-title {
@@ -80,7 +62,6 @@
       overflow: hidden;
     }
 
-    /* ── Sidebar ── */
     .sidebar {
       width: 300px;
       flex-shrink: 0;
@@ -109,7 +90,6 @@
       margin-bottom: 10px;
     }
 
-    /* Location */
     .btn-location {
       width: 100%;
       display: flex;
@@ -135,11 +115,94 @@
       margin-top: 8px;
     }
 
-    /* Activity */
-    .activity-grid {
+    /* Search */
+    .search-wrap { position: relative; margin-bottom: 10px; }
+
+    .search-row {
       display: flex;
-      gap: 6px;
+      align-items: center;
+      gap: 8px;
+      background: #374151;
+      border: 1px solid #4b5563;
+      border-radius: 8px;
+      padding: 0 10px;
+      transition: border-color 0.15s;
     }
+    .search-row:focus-within { border-color: #3b82f6; }
+    .search-row .fa-search { color: #6b7280; font-size: 13px; flex-shrink: 0; }
+    .search-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #f9fafb;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+    .search-row input::placeholder { color: #6b7280; }
+    .search-clear {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .search-clear:hover { color: #d1d5db; }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      list-style: none;
+      z-index: 1000;
+      max-height: 210px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .search-dropdown li {
+      padding: 9px 12px;
+      font-size: 13px;
+      color: #d1d5db;
+      cursor: pointer;
+      border-bottom: 1px solid #374151;
+      line-height: 1.35;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+    .search-dropdown li:last-child { border-bottom: none; }
+    .search-dropdown li:hover,
+    .search-dropdown li.focused { background: #374151; color: #f9fafb; }
+    .search-dropdown li .fa { color: #6b7280; font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+    .search-status {
+      padding: 11px 12px;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+      cursor: default;
+    }
+
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #4b5563;
+      margin: 10px 0;
+    }
+    .or-divider::before, .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #374151;
+    }
+
+    .activity-grid { display: flex; gap: 6px; }
 
     .activity-btn {
       flex: 1;
@@ -158,188 +221,87 @@
     }
     .activity-btn i { font-size: 18px; }
     .activity-btn:hover { border-color: #6b7280; color: #d1d5db; }
-    .activity-btn.active {
-      border-color: #3b82f6;
-      color: #93c5fd;
-      background: rgba(59,130,246,0.1);
-    }
-    .activity-btn[data-activity="running"].active {
-      border-color: #f59e0b;
-      color: #fcd34d;
-      background: rgba(245,158,11,0.1);
-    }
-    .activity-btn[data-activity="cycling"].active {
-      border-color: #10b981;
-      color: #6ee7b7;
-      background: rgba(16,185,129,0.1);
-    }
+    .activity-btn.active { border-color: #3b82f6; color: #93c5fd; background: rgba(59,130,246,0.1); }
+    .activity-btn[data-activity="running"].active { border-color: #f59e0b; color: #fcd34d; background: rgba(245,158,11,0.1); }
+    .activity-btn[data-activity="cycling"].active { border-color: #10b981; color: #6ee7b7; background: rgba(16,185,129,0.1); }
 
-    /* Distance */
-    .distance-display {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .distance-display .value {
-      font-size: 38px;
-      font-weight: 700;
-      color: #f9fafb;
-      line-height: 1;
-    }
-    .distance-display .unit {
-      font-size: 16px;
-      color: #6b7280;
-      margin-left: 4px;
-    }
+    .distance-display { text-align: center; margin-bottom: 10px; }
+    .distance-display .value { font-size: 38px; font-weight: 700; color: #f9fafb; line-height: 1; }
+    .distance-display .unit { font-size: 16px; color: #6b7280; margin-left: 4px; }
 
     input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 4px;
-      background: #374151;
-      border-radius: 2px;
-      outline: none;
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 4px;
+      background: #374151; border-radius: 2px; outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      background: #3b82f6;
-      border-radius: 50%;
-      cursor: pointer;
+      width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; cursor: pointer;
     }
     input[type="range"]::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
-      background: #3b82f6;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
+      width: 16px; height: 16px; background: #3b82f6; border: none; border-radius: 50%; cursor: pointer;
     }
+    .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: #4b5563; margin-top: 5px; }
 
-    .range-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #4b5563;
-      margin-top: 5px;
-    }
-
-    /* Generate button */
     .btn-generate {
-      width: 100%;
-      padding: 14px;
-      background: #2563eb;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: background 0.15s, transform 0.1s;
+      width: 100%; padding: 14px;
+      background: #2563eb; border: none; border-radius: 10px;
+      color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
+      letter-spacing: 0.3px; transition: background 0.15s, transform 0.1s;
     }
     .btn-generate:hover { background: #1d4ed8; transform: translateY(-1px); }
     .btn-generate:active { transform: translateY(0); }
     .btn-generate:disabled { background: #374151; color: #6b7280; cursor: not-allowed; transform: none; }
 
-    /* Route stats */
-    .stats-row {
-      display: flex;
-      gap: 8px;
-    }
-
+    .stats-row { display: flex; gap: 8px; }
     .stat-box {
-      flex: 1;
-      background: #1f2937;
-      border: 1px solid #374151;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
+      flex: 1; background: #1f2937; border: 1px solid #374151;
+      border-radius: 8px; padding: 10px; text-align: center;
     }
     .stat-box i { font-size: 16px; color: #3b82f6; display: block; margin-bottom: 4px; }
     .stat-box .stat-value { font-size: 16px; font-weight: 700; color: #f9fafb; }
     .stat-box .stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
     .btn-reshuffle {
-      width: 100%;
-      margin-top: 8px;
-      padding: 9px 14px;
-      background: transparent;
-      border: 1px solid #374151;
-      border-radius: 8px;
-      color: #6b7280;
-      font-size: 13px;
-      cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
+      width: 100%; margin-top: 8px; padding: 9px 14px;
+      background: transparent; border: 1px solid #374151; border-radius: 8px;
+      color: #6b7280; font-size: 13px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
     }
     .btn-reshuffle:hover { border-color: #6b7280; color: #d1d5db; }
 
-    /* Error */
     .error-banner {
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.35);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
-      color: #fca5a5;
-      line-height: 1.4;
+      background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35);
+      border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #fca5a5; line-height: 1.4;
     }
 
     .hidden { display: none !important; }
 
-    /* ── Map ── */
-    .map-wrapper {
-      flex: 1;
-      position: relative;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    .map-wrapper { flex: 1; position: relative; }
+    #map { width: 100%; height: 100%; }
 
     .loading-veil {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: rgba(17,24,39,0.65);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      z-index: 500;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; z-index: 500;
     }
     .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid rgba(59,130,246,0.3);
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      width: 36px; height: 36px;
+      border: 3px solid rgba(59,130,246,0.3); border-top-color: #3b82f6;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
     }
     .loading-label { font-size: 14px; color: #9ca3af; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Start marker */
     .start-pin {
-      width: 14px;
-      height: 14px;
-      background: #f9fafb;
-      border: 3px solid #2563eb;
-      border-radius: 50%;
+      width: 14px; height: 14px;
+      background: #f9fafb; border: 3px solid #2563eb; border-radius: 50%;
       box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
     }
 
-    /* Responsive */
     @media (max-width: 680px) {
       .main-body { flex-direction: column; }
-      .sidebar {
-        width: 100%;
-        max-height: 55vh;
-        border-right: none;
-        border-bottom: 1px solid #374151;
-      }
+      .sidebar { width: 100%; max-height: 55vh; border-right: none; border-bottom: 1px solid #374151; }
       .map-wrapper { min-height: 45vh; }
       .top-bar-subtitle { display: none; }
     }
@@ -348,12 +310,7 @@
 <body>
 <div class="app-shell">
 
-  <!-- Top bar -->
   <header class="top-bar">
-    <a href="index.html" class="top-bar-back">
-      <i class="fa fa-arrow-left"></i> Portfolio
-    </a>
-    <div class="top-bar-divider"></div>
     <span class="top-bar-title">
       <i class="fa fa-refresh" style="color:#3b82f6;margin-right:6px;"></i>Circular Route Planner
     </span>
@@ -361,36 +318,36 @@
   </header>
 
   <div class="main-body">
-
-    <!-- ── Sidebar controls ── -->
     <aside class="sidebar">
 
-      <!-- Start point -->
       <div class="card">
         <div class="card-label"><i class="fa fa-map-marker"></i> Start Point</div>
+        <div class="search-wrap">
+          <div class="search-row">
+            <i class="fa fa-search"></i>
+            <input type="text" id="search-input" placeholder="Search for a place…" autocomplete="off" spellcheck="false">
+            <button class="search-clear hidden" id="search-clear" tabindex="-1" aria-label="Clear search">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <ul class="search-dropdown hidden" id="search-dropdown"></ul>
+        </div>
+        <div class="or-divider">or</div>
         <button class="btn-location" id="btn-location">
           <i class="fa fa-crosshairs"></i> Use My Location
         </button>
         <p class="map-hint">or click anywhere on the map</p>
       </div>
 
-      <!-- Activity -->
       <div class="card">
         <div class="card-label"><i class="fa fa-heartbeat"></i> Activity</div>
         <div class="activity-grid">
-          <button class="activity-btn active" data-activity="walking">
-            <i class="fa fa-male"></i>Walking
-          </button>
-          <button class="activity-btn" data-activity="running">
-            <i class="fa fa-male"></i>Running
-          </button>
-          <button class="activity-btn" data-activity="cycling">
-            <i class="fa fa-bicycle"></i>Cycling
-          </button>
+          <button class="activity-btn active" data-activity="walking"><i class="fa fa-male"></i>Walking</button>
+          <button class="activity-btn" data-activity="running"><i class="fa fa-male"></i>Running</button>
+          <button class="activity-btn" data-activity="cycling"><i class="fa fa-bicycle"></i>Cycling</button>
         </div>
       </div>
 
-      <!-- Distance -->
       <div class="card">
         <div class="card-label"><i class="fa fa-road"></i> Target Distance</div>
         <div class="distance-display">
@@ -400,42 +357,25 @@
         <div class="range-labels"><span>2 km</span><span>20 km</span></div>
       </div>
 
-      <!-- Generate -->
       <button class="btn-generate" id="btn-generate">
         <i class="fa fa-refresh"></i> Generate Route
       </button>
 
-      <!-- Route stats (hidden until route generated) -->
       <div class="card hidden" id="stats-card">
         <div class="card-label"><i class="fa fa-bar-chart"></i> Route Summary</div>
         <div class="stats-row">
-          <div class="stat-box">
-            <i class="fa fa-road"></i>
-            <div class="stat-value" id="stat-dist">—</div>
-            <div class="stat-label">Distance</div>
-          </div>
-          <div class="stat-box">
-            <i class="fa fa-clock-o"></i>
-            <div class="stat-value" id="stat-time">—</div>
-            <div class="stat-label">Est. Time</div>
-          </div>
-          <div class="stat-box">
-            <i class="fa fa-tachometer"></i>
-            <div class="stat-value" id="stat-pace">—</div>
-            <div class="stat-label">Avg Pace</div>
-          </div>
+          <div class="stat-box"><i class="fa fa-road"></i><div class="stat-value" id="stat-dist">—</div><div class="stat-label">Distance</div></div>
+          <div class="stat-box"><i class="fa fa-clock-o"></i><div class="stat-value" id="stat-time">—</div><div class="stat-label">Est. Time</div></div>
+          <div class="stat-box"><i class="fa fa-tachometer"></i><div class="stat-value" id="stat-pace">—</div><div class="stat-label">Avg Pace</div></div>
         </div>
         <button class="btn-reshuffle" id="btn-reshuffle">
           <i class="fa fa-random"></i> Try a Different Direction
         </button>
       </div>
 
-      <!-- Error -->
       <div class="error-banner hidden" id="error-msg"></div>
-
     </aside>
 
-    <!-- ── Map ── -->
     <div class="map-wrapper">
       <div id="map"></div>
       <div class="loading-veil hidden" id="loading">
@@ -443,32 +383,27 @@
         <span class="loading-label">Plotting your route…</span>
       </div>
     </div>
-
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const VALHALLA = 'https://valhalla1.openstreetmap.de/route';
+const NOMINATIM = 'https://nominatim.openstreetmap.org/search';
 const R = 6371000;
 
 const COSTING = { walking: 'pedestrian', running: 'pedestrian', cycling: 'bicycle' };
 const SPEED   = { walking: 5, running: 10, cycling: 20 };
 const COLOR   = { walking: '#3b82f6', running: '#f59e0b', cycling: '#10b981' };
 
-let startPoint   = null;
-let activity     = 'walking';
-let routeLayer   = null;
-let startMarker  = null;
-let bearingBase  = Math.random() * 360;
+let startPoint = null, activity = 'walking', routeLayer = null, startMarker = null;
+let bearingBase = Math.random() * 360;
 
 const map = L.map('map', { zoomControl: true }).setView([51.505, -0.09], 13);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   maxZoom: 19
 }).addTo(map);
-
 map.on('click', e => placeStart(e.latlng.lat, e.latlng.lng));
 
 function placeStart(lat, lng) {
@@ -484,141 +419,162 @@ function setLoading(on) {
   document.getElementById('loading').classList.toggle('hidden', !on);
   document.getElementById('btn-generate').disabled = on;
 }
-
-function showError(msg) {
-  const el = document.getElementById('error-msg');
-  el.textContent = msg;
-  el.classList.remove('hidden');
-}
-
-function hideError() {
-  document.getElementById('error-msg').classList.add('hidden');
-}
+function showError(msg) { const el = document.getElementById('error-msg'); el.textContent = msg; el.classList.remove('hidden'); }
+function hideError() { document.getElementById('error-msg').classList.add('hidden'); }
 
 function showStats(distM, act) {
-  const distKm = distM / 1000;
-  const mins   = (distKm / SPEED[act]) * 60;
+  const distKm = distM / 1000, mins = (distKm / SPEED[act]) * 60;
   document.getElementById('stat-dist').textContent = distKm.toFixed(2) + ' km';
-  document.getElementById('stat-time').textContent =
-    mins >= 60 ? `${Math.floor(mins/60)}h ${Math.round(mins%60)}m` : `${Math.round(mins)} min`;
+  document.getElementById('stat-time').textContent = mins >= 60 ? `${Math.floor(mins/60)}h ${Math.round(mins%60)}m` : `${Math.round(mins)} min`;
   if (act === 'cycling') {
     document.getElementById('stat-pace').textContent = SPEED[act] + ' km/h';
   } else {
-    const minsPerKm = 60 / SPEED[act];
-    document.getElementById('stat-pace').textContent =
-      `${Math.floor(minsPerKm)}:${String(Math.round((minsPerKm%1)*60)).padStart(2,'0')} /km`;
+    const m = 60 / SPEED[act];
+    document.getElementById('stat-pace').textContent = `${Math.floor(m)}:${String(Math.round((m%1)*60)).padStart(2,'0')} /km`;
   }
   document.getElementById('stats-card').classList.remove('hidden');
 }
 
 function destPoint(lat, lng, bearingDeg, distM) {
-  const delta = distM / R;
-  const theta = bearingDeg * Math.PI / 180;
-  const phi1  = lat * Math.PI / 180;
-  const lam1  = lng * Math.PI / 180;
-  const phi2  = Math.asin(Math.sin(phi1)*Math.cos(delta) + Math.cos(phi1)*Math.sin(delta)*Math.cos(theta));
-  const lam2  = lam1 + Math.atan2(Math.sin(theta)*Math.sin(delta)*Math.cos(phi1), Math.cos(delta)-Math.sin(phi1)*Math.sin(phi2));
-  return [phi2*180/Math.PI, ((lam2*180/Math.PI)+540)%360-180];
+  const d=distM/R, t=bearingDeg*Math.PI/180, p1=lat*Math.PI/180, l1=lng*Math.PI/180;
+  const p2=Math.asin(Math.sin(p1)*Math.cos(d)+Math.cos(p1)*Math.sin(d)*Math.cos(t));
+  const l2=l1+Math.atan2(Math.sin(t)*Math.sin(d)*Math.cos(p1),Math.cos(d)-Math.sin(p1)*Math.sin(p2));
+  return [p2*180/Math.PI,((l2*180/Math.PI)+540)%360-180];
 }
 
 function buildWaypoints(lat, lng, targetM, n, bOffset) {
-  const radius = (targetM / (2 * Math.PI)) * 0.74;
-  const pts = [];
-  for (let i = 0; i < n; i++) pts.push(destPoint(lat, lng, bOffset + (360/n)*i, radius));
+  const radius = (targetM/(2*Math.PI))*0.74, pts=[];
+  for (let i=0;i<n;i++) pts.push(destPoint(lat,lng,bOffset+(360/n)*i,radius));
   return pts;
 }
 
 function decodePolyline6(str) {
-  const coords = [];
-  let idx = 0, lat = 0, lng = 0;
-  while (idx < str.length) {
-    let b, shift = 0, result = 0;
-    do { b = str.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    lat += (result & 1) ? ~(result >> 1) : (result >> 1);
-    shift = 0; result = 0;
-    do { b = str.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    lng += (result & 1) ? ~(result >> 1) : (result >> 1);
-    coords.push([lat / 1e6, lng / 1e6]);
+  const coords=[]; let idx=0, lat=0, lng=0;
+  while (idx<str.length) {
+    let b,shift=0,result=0;
+    do{b=str.charCodeAt(idx++)-63;result|=(b&0x1f)<<shift;shift+=5;}while(b>=0x20);
+    lat+=(result&1)?~(result>>1):(result>>1);
+    shift=0;result=0;
+    do{b=str.charCodeAt(idx++)-63;result|=(b&0x1f)<<shift;shift+=5;}while(b>=0x20);
+    lng+=(result&1)?~(result>>1):(result>>1);
+    coords.push([lat/1e6,lng/1e6]);
   }
   return coords;
 }
 
 async function fetchRoute(lat, lng, targetM, costing, bOffset) {
-  const intermediates = buildWaypoints(lat, lng, targetM, 4, bOffset);
+  const intermediates = buildWaypoints(lat,lng,targetM,4,bOffset);
   const locations = [
-    { lat, lon: lng, type: 'break' },
-    ...intermediates.map(([la, lo]) => ({ lat: la, lon: lo, type: 'through' })),
-    { lat, lon: lng, type: 'break' }
+    {lat,lon:lng,type:'break'},
+    ...intermediates.map(([la,lo])=>({lat:la,lon:lo,type:'through'})),
+    {lat,lon:lng,type:'break'}
   ];
-  const res = await fetch(VALHALLA, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ locations, costing, directions_type: 'none', units: 'km' })
+  const res = await fetch(VALHALLA,{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({locations,costing,directions_type:'none',units:'km'})
   });
   if (!res.ok) throw new Error(`Routing service returned ${res.status}`);
   const data = await res.json();
   if (!data.trip) throw new Error('No route returned.');
-  return { coords: decodePolyline6(data.trip.legs[0].shape), distM: data.trip.summary.length * 1000 };
+  return {coords:decodePolyline6(data.trip.legs[0].shape), distM:data.trip.summary.length*1000};
 }
 
 async function generateRoute() {
-  if (!startPoint) { showError('Set a start point first — click anywhere on the map or use your location.'); return; }
-  hideError();
-  setLoading(true);
+  if (!startPoint) { showError('Set a start point first — search, use GPS, or click the map.'); return; }
+  hideError(); setLoading(true);
   try {
     const targetKm = parseFloat(document.getElementById('dist-slider').value);
-    const { coords, distM } = await fetchRoute(startPoint.lat, startPoint.lng, targetKm * 1000, COSTING[activity], bearingBase);
+    const {coords,distM} = await fetchRoute(startPoint.lat,startPoint.lng,targetKm*1000,COSTING[activity],bearingBase);
     if (routeLayer) map.removeLayer(routeLayer);
-    routeLayer = L.polyline(coords, { color: COLOR[activity], weight: 5, opacity: 0.9, lineCap: 'round', lineJoin: 'round' }).addTo(map);
-    if (startMarker) { startMarker.remove(); startMarker.addTo(map); }
-    map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
-    showStats(distM, activity);
-  } catch (err) {
-    showError('Could not generate route: ' + err.message);
-  } finally {
-    setLoading(false);
-  }
+    routeLayer = L.polyline(coords,{color:COLOR[activity],weight:5,opacity:0.9,lineCap:'round',lineJoin:'round'}).addTo(map);
+    if (startMarker){startMarker.remove();startMarker.addTo(map);}
+    map.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
+    showStats(distM,activity);
+  } catch(err) {
+    showError('Could not generate route: '+err.message);
+  } finally { setLoading(false); }
 }
 
-document.querySelectorAll('.activity-btn').forEach(btn => {
-  btn.addEventListener('click', function () {
-    document.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    activity = this.dataset.activity;
+document.querySelectorAll('.activity-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.activity-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active'); activity=this.dataset.activity;
   });
 });
 
-document.getElementById('dist-slider').addEventListener('input', function () {
-  const v = parseFloat(this.value);
-  document.getElementById('dist-val').textContent = v % 1 === 0 ? v : v.toFixed(1);
+document.getElementById('dist-slider').addEventListener('input',function(){
+  const v=parseFloat(this.value);
+  document.getElementById('dist-val').textContent=v%1===0?v:v.toFixed(1);
 });
 
-document.getElementById('btn-location').addEventListener('click', function () {
-  if (!navigator.geolocation) { showError('Geolocation not supported.'); return; }
-  this.disabled = true;
-  this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Locating…';
-  const btn = this;
+document.getElementById('btn-location').addEventListener('click',function(){
+  if(!navigator.geolocation){showError('Geolocation not supported.');return;}
+  this.disabled=true; this.innerHTML='<i class="fa fa-spinner fa-spin"></i> Locating…';
+  const btn=this;
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      placeStart(pos.coords.latitude, pos.coords.longitude);
-      map.setView([pos.coords.latitude, pos.coords.longitude], 15);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa fa-crosshairs"></i> Use My Location';
-    },
-    err => {
-      showError('Location unavailable: ' + err.message);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa fa-crosshairs"></i> Use My Location';
-    }
+    pos=>{ placeStart(pos.coords.latitude,pos.coords.longitude); map.setView([pos.coords.latitude,pos.coords.longitude],15); btn.disabled=false; btn.innerHTML='<i class="fa fa-crosshairs"></i> Use My Location'; },
+    err=>{ showError('Location unavailable: '+err.message); btn.disabled=false; btn.innerHTML='<i class="fa fa-crosshairs"></i> Use My Location'; }
   );
 });
 
-document.getElementById('btn-generate').addEventListener('click', generateRoute);
+document.getElementById('btn-generate').addEventListener('click',generateRoute);
+document.getElementById('btn-reshuffle').addEventListener('click',()=>{ bearingBase=(bearingBase+45+Math.random()*90)%360; generateRoute(); });
 
-document.getElementById('btn-reshuffle').addEventListener('click', () => {
-  bearingBase = (bearingBase + 45 + Math.random() * 90) % 360;
-  generateRoute();
+/* === Search === */
+const searchInput=document.getElementById('search-input');
+const searchDrop=document.getElementById('search-dropdown');
+const searchClear=document.getElementById('search-clear');
+let searchTimer=null, searchAbort=null, focusedIdx=-1;
+
+function openDrop(html){searchDrop.innerHTML=html;searchDrop.classList.remove('hidden');focusedIdx=-1;}
+function closeDrop(){searchDrop.classList.add('hidden');searchDrop.innerHTML='';focusedIdx=-1;}
+
+function moveFocus(delta){
+  const items=searchDrop.querySelectorAll('li[data-lat]'); if(!items.length)return;
+  items[focusedIdx]?.classList.remove('focused');
+  focusedIdx=Math.max(0,Math.min(items.length-1,focusedIdx+delta));
+  items[focusedIdx].classList.add('focused'); items[focusedIdx].scrollIntoView({block:'nearest'});
+}
+
+function selectResult(lat,lng,label){
+  searchInput.value=label; searchClear.classList.remove('hidden');
+  closeDrop(); placeStart(lat,lng); map.setView([lat,lng],15);
+}
+
+async function doSearch(q){
+  if(searchAbort)searchAbort.abort(); searchAbort=new AbortController();
+  try{
+    const res=await fetch(`${NOMINATIM}?q=${encodeURIComponent(q)}&format=json&limit=6&addressdetails=0`,
+      {signal:searchAbort.signal,headers:{'Accept-Language':'en'}});
+    const data=await res.json();
+    if(!data.length){openDrop('<li class="search-status">No results found</li>');return;}
+    openDrop(data.map(r=>`<li data-lat="${r.lat}" data-lng="${r.lon}"><i class="fa fa-map-marker"></i><span>${r.display_name}</span></li>`).join(''));
+    searchDrop.querySelectorAll('li[data-lat]').forEach(li=>{
+      li.addEventListener('mousedown',e=>{ e.preventDefault(); selectResult(parseFloat(li.dataset.lat),parseFloat(li.dataset.lng),li.querySelector('span').textContent); });
+    });
+  }catch(err){ if(err.name!=='AbortError')openDrop('<li class="search-status">Search unavailable</li>'); }
+}
+
+searchInput.addEventListener('input',function(){
+  const q=this.value.trim(); searchClear.classList.toggle('hidden',!q);
+  clearTimeout(searchTimer); if(q.length<2){closeDrop();return;}
+  openDrop('<li class="search-status"><i class="fa fa-spinner fa-spin"></i> Searching…</li>');
+  searchTimer=setTimeout(()=>doSearch(q),350);
 });
+
+searchInput.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();moveFocus(+1);}
+  if(e.key==='ArrowUp'){e.preventDefault();moveFocus(-1);}
+  if(e.key==='Escape'){closeDrop();searchInput.blur();}
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const f=searchDrop.querySelector('li.focused')||searchDrop.querySelector('li[data-lat]');
+    if(f)selectResult(parseFloat(f.dataset.lat),parseFloat(f.dataset.lng),f.querySelector('span').textContent);
+  }
+});
+
+searchClear.addEventListener('click',()=>{ searchInput.value=''; searchClear.classList.add('hidden'); closeDrop(); searchInput.focus(); });
+document.addEventListener('click',e=>{ if(!e.target.closest('.search-wrap'))closeDrop(); });
 </script>
 </body>
 </html>
